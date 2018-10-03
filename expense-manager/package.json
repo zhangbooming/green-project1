@@ -14,10 +14,12 @@
     "react-dom": "^16.5.2",
     "react-modal": "^3.6.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "2.0.3"
+    "react-scripts": "2.0.3",
+    "webpack": "^3.4.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "webpack": "webpack",
+    "start": "npm run webpack && nodemon --exec babel-node -- bin/www",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -30,5 +32,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "webpack-cli": "^3.1.2"
+  }
 }
