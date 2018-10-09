@@ -7,10 +7,12 @@ import Delete from './Delete';
 import { Tab, Tabs } from 'react-bootstrap';
 import YearTabsRouter from './tabs/yearTabsRouter';
 import MonthTabs from './tabs/monthTabs';
+import {Button} from 'react-bootstrap';
+import Modal from 'react-modal';
 export default class App extends React.Component {
 constructor() {
     super();
-  this.state = {selectedMonth:'All', selectedYear: 2016, data: [], activeTab:2016};
+  this.state = {selectedMonth:'All', selectedYear: 2016, data: [], activeTab: 2016,  monthSum1: 0, display_name: 'none'};
     this.getData = this.getData.bind(this);
   }
 componentWillReceiveProps(nextProps) {
@@ -41,8 +43,27 @@ getData(ev, year, month){
         ev.setState({data: response.data});
         ev.setState({selectedYear: parseInt(year)});
         ev.setState({selectedMonth: month});
+        var sum  = 0;
+        response.data.map((exp) => {
+        sum = sum+exp.amount;
+        });
+        ev.setState({monthSum1: sum}); 
       });
 }
+
+display_name(){
+  if(this.state.display_name == 'none'){
+    this.setState({
+      display_name:'block'
+    });
+  }else if (this.state.display_name == 'block'){
+    this.setState({
+      display_name:'none'
+    })
+  }
+}
+
+
 render() {
     return (
       <div>
@@ -52,16 +73,39 @@ render() {
           <Tab eventKey={2018} title={<YearTabsRouter year='2018'/>}><MonthTabs year='2018' monthlyActiveTab={this.state.selectedMonth}/></Tab>
           <Tab eventKey={2019} title={<YearTabsRouter year='2019'/>}><MonthTabs year='2019' monthlyActiveTab={this.state.selectedMonth}/></Tab>
           <Tab eventKey={2020} title={<YearTabsRouter year='2020'/>}><MonthTabs year='2020' monthlyActiveTab={this.state.selectedMonth}/></Tab>
+          
         </Tabs>
         <Add selectedMonth={this.state.selectedMonth} selectedYear={this.state.selectedYear} />
+        <Button  bsSize="small" className="btn btn-primary active" onClick={this.display_name.bind(this)}>SUM</Button>
+        <Button style={{display:this.state.display_name,marginLeft:300}} className="btn btn-info">Expenses for {this.state.selectedMonth},{this.state.selectedYear} : <u><mark> $ {this.state.monthSum1}</mark></u></Button>
+
+
         <table>
           <thead>
-            <tr><th></th><th className='desc-col'>Description</th><th className='button-col'>Amount</th><th className='button-col'>Month</th><th className='button-col'>Year</th><th className='button-col'>Update</th><th className='button-col'>Delete</th></tr>
+            <tr>
+            <th></th>
+            <th className='desc-col'>Description</th>
+            <th className='button-col'>Amount</th>
+            <th className='button-col'>Month</th>
+            <th className='button-col'>Year</th>
+            <th className='button-col'>Update</th>
+            <th className='button-col'>Delete</th>
+            </tr>
           </thead>
           <tbody>
             {
               this.state.data.map((exp) => {
-                return  <tr><td className='counterCell'></td><td className='desc-col'>{exp.description}</td><td className='button-col'>{exp.amount}</td><td className='button-col'>{exp.month}</td><td className='button-col'>{exp.year}</td><td className='button-col'><Update expense={exp}/></td><td className='button-col'><Delete expense={exp} /></td></tr>
+                return  (
+                <tr>
+                <td className='counterCell'></td>
+                <td className='desc-col'>{exp.description}</td>
+                <td className='button-col'>{exp.amount}</td>
+                <td className='button-col'>{exp.month}</td>
+                <td className='button-col'>{exp.year}</td>
+                <td className='button-col'><Update expense={exp}/></td>
+                <td className='button-col'><Delete expense={exp} /></td>
+                </tr>
+                )
               })
             }
             </tbody>
@@ -70,3 +114,4 @@ render() {
     );
   }
 }
+

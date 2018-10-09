@@ -97,6 +97,8 @@ insertNewExpense(e) {
         });
       });
     }
+
+
 handleTextChange(e) {
       if (e.target.name == "description") {
         this.setState({
@@ -109,6 +111,7 @@ if (e.target.name == "amount") {
         });
       }
     }
+
 render() {
    if(this.state.messageFromServer == ''){
       return (
